@@ -1,0 +1,8 @@
+13 2 0
+-9 0 0
+
+fault bus, fault type, fault impedance
+Three-phase to ground: 1
+Phase A to ground: 2
+Phase B to phase C to ground: 3
+Phase B to phase C (ungrounded): 4
