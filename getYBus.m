@@ -56,17 +56,33 @@ Y0 = zeros(nb,nb);               % Initialise YBus...
      
  end
  
- % Formation of Diagonal Elements....currently does not support type 3
- % xfmrs
+ % Formation of Diagonal Elements
  for m = 1:nb%for each bus:
      for n = 1:nl% for each branch
          %find each bus in either from bus or to bus column
-         if fb(n) == m
+         if (fb(n) == m) && ( type(n)==0 )
              Y12(m,m) = Y12(m,m) + y12(n) + b12(n);
              Y0(m,m) = Y0(m,m) + y0(n) + b0(n);
-         elseif tb(n) == m
+         elseif (fb(n) == m) && ( type(n)~=0 )
+             Y12(m,m) = Y12(m,m) + y12(n) + b12(n);
+             switch type(n)
+                 case {1 4 5}%dont do anything because impedances not connected to ground
+                     Y0(m,m) = Y0(m,m);
+                 case {2 3}% treat case 3 as if the From Bus is the grounded WYE end, so it has an impedance to ground
+                     Y0(m,m) = Y0(m,m) + y0(n) + b0(n);
+             end
+                         
+         elseif (tb(n) == m) && ( type(n)==0 )
              Y12(m,m) = Y12(m,m) + y12(n) + b12(n);
              Y0(m,m) = Y0(m,m) + y0(n) + b0(n);
+         elseif (tb(n) == m) && ( type(n)~=0 )
+             Y12(m,m) = Y12(m,m) + y12(n) + b12(n);
+             switch type(n)
+                 case {1 3 4 5}%dont do anything because impedances not connected to ground
+                     Y0(m,m) = Y0(m,m);
+                 case {2}% treat case 3 as if the To Bus is the Delta end, so it has inf impedance to ground
+                     Y0(m,m) = Y0(m,m) + y0(n) + b0(n);
+             end
          end
      end
  end
